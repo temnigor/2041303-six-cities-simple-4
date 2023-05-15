@@ -8,6 +8,9 @@ parserOptions:
   sourceType: module
 plugins:
   - "@typescript-eslint"
+  - "prettier"
 extends:
   - "plugin:@typescript-eslint/recommended"
   - "htmlacademy/node"
+  - "prettierrc"
+  - "prettier/@typescript-eslint"
