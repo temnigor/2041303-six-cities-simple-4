@@ -1,18 +1,19 @@
 import { HouseType } from '../../enum/house-type.js';
-//import { Offer } from '../../types/offer.type';
+import { Coordinates } from '../../types/coordinates.type.js';
+import { Offer } from '../../types/offer.type';
 
-function getCoordinate(data: string) {
-    const coordinate: { [coordinateName: string]: string } = {};
+function getCoordinate(data: string): Coordinates {
+    const coordinate: { [coordinateName: string]: number } = {};
     data.split(',')
         .map(element => element.split(':'))
         .forEach(element => {
             const elem = element[0];
-            coordinate[elem] = element[1];
+            coordinate[elem] = parseInt(element[1], 10);
         });
-    return coordinate;
+    return coordinate as Coordinates;
 }
 
-export function createOffer(offerString: string) {
+export function createOffer(offerString: string): Offer {
     const [
         offerName,
         description,

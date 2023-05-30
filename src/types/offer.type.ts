@@ -1,4 +1,3 @@
-import { AmenityEnum } from '../enum/amenity.enum';
 import { Coordinates } from './coordinates.type';
 
 export type Offer = {
@@ -13,7 +12,7 @@ export type Offer = {
     room: number;
     guest: number;
     price: number;
-    amenity: AmenityEnum;
+    amenity: string[];
     user: number;
     coordinatesTown: Coordinates;
 };
