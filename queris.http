@@ -1,0 +1,3 @@
+# Get mock data
+
+Get http://localhost:3131/api HTTP/1.1

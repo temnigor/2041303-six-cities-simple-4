@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { readFileSync } from 'node:fs';
-import { CliCommandInterface } from '../interface/cli-command-interface';
+import { CliCommandInterface } from '../interface/cli-command-interface.js';
 
 export default class CliVersion implements CliCommandInterface {
     public readonly name = '--version';

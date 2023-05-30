@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { CliCommandInterface } from '../interface/cli-command-interface';
+import { CliCommandInterface } from '../interface/cli-command-interface.js';
 
 export default class CliHelp implements CliCommandInterface {
     public readonly name = '--help';

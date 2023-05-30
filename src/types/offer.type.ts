@@ -1,6 +1,5 @@
 import { AmenityEnum } from '../enum/amenity.enum';
 import { Coordinates } from './coordinates.type';
-import { PremiumType } from './premium.type';
 
 export type Offer = {
     offerName: string;
@@ -8,7 +7,7 @@ export type Offer = {
     date: Date;
     town: string;
     previewImage: string;
-    premium: PremiumType;
+    premium: boolean;
     rating: number;
     houseType: string;
     room: number;

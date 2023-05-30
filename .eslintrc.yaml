@@ -12,5 +12,4 @@ plugins:
 extends:
   - "plugin:@typescript-eslint/recommended"
   - "htmlacademy/node"
-  - "prettierrc"
-  - "prettier/@typescript-eslint"
+  - "prettier"
