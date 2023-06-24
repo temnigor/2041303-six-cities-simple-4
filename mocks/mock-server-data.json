@@ -18,7 +18,7 @@
       "18 october 2010",
       "23 marth 2008",
       "24 june 2003",
-      "23 sptember 2020",
+      "23 september 2020",
       "26 marth 2018"
     ],
     "town": [
@@ -90,13 +90,39 @@
     " Towels",
     " Fridge"
   ],
-  "user": [
-    11324,
-    1234,
-    1567,
-    1678,
-    1235
-  ],
+  "user": {
+    "name":[
+      "булочка",
+      "пончик",
+      "пирожочек",
+      "ириска"
+    ],
+
+    "email":[
+    "tort@gmail.com",
+    "pos@gmail.com",
+    "gort@gmail.com",
+    "path@gmail.com"
+    ],
+
+    "avatarPath":[
+      "garila.jpg",
+      "goblin.jpg",
+      "vasilisa.jpg",
+      "pandus.jpg"
+    ],
+
+    "password":[
+      "12341234",
+      "12341"
+    ],
+
+    "userType":[
+     1,
+      0
+    ]
+  },
+
   "coordinatesTown":[
     ["latitude: 48.85661", "longitude: 2.351499"],
     ["latitude: 50.938361", "longitude: 6.959974"],

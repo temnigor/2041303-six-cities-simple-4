@@ -13,6 +13,11 @@ export type Offer = {
     guest: number;
     price: number;
     amenity: string[];
-    user: number;
+    user: {
+        name: string;
+        email: string;
+        avatarPath: string;
+        userType: boolean;
+    };
     coordinatesTown: Coordinates;
 };

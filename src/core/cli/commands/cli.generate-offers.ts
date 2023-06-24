@@ -8,6 +8,8 @@ export default class CliGenerateOffers implements CliCommandInterface {
     public readonly name = '--generate';
     private initialData!: MockData;
 
+    private offer = new OfferGenerator();
+
     public async execute(...parameters: string[]): Promise<void> {
         const [count, filepath, url] = parameters;
         const offerCount = Number.parseInt(count, 10);
@@ -19,12 +21,10 @@ export default class CliGenerateOffers implements CliCommandInterface {
                 console.log(err.message);
             }
         }
-
-        const offer = new OfferGenerator(this.initialData);
         const writer = new FileWriter(filepath);
 
         for (let i = 0; i < offerCount; i++) {
-            writer.write(offer.generate());
+            writer.write(this.offer.generate(this.initialData));
         }
         console.log(`file ${filepath} create`);
     }

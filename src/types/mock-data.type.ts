@@ -11,6 +11,11 @@ export type MockData = {
     guest: string[];
     price: string[];
     amenity: string[];
-    user: string[];
+    user: {
+        name: string[];
+        email: string[];
+        avatarPath: string[];
+        userType: boolean[];
+    };
     coordinatesTown: string[];
 };

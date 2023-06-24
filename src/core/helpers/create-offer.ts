@@ -1,4 +1,4 @@
-import { HouseType } from '../../enum/house-type.js';
+import { HouseType } from '../../enum/house-type.enum.js';
 import { Coordinates } from '../../types/coordinates.type.js';
 import { Offer } from '../../types/offer.type';
 
@@ -27,7 +27,10 @@ export function createOffer(offerString: string): Offer {
         guest,
         price,
         amenity,
-        user,
+        name,
+        email,
+        avatarPath,
+        userType,
         coordinatesTown,
     ] = offerString.split('\t');
 
@@ -45,7 +48,13 @@ export function createOffer(offerString: string): Offer {
         guest: Number.parseInt(guest, 10),
         price: Number.parseInt(price, 10),
         amenity: amenity.split(','),
-        user: Number.parseInt(user, 10),
+        user: {
+            name,
+            email,
+            avatarPath,
+            userType: Boolean(Number.parseInt(userType, 10)),
+        },
+
         coordinatesTown: getCoordinate(coordinatesTown),
     };
 }

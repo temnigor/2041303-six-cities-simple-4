@@ -30,7 +30,9 @@ export default class TSVFileReader
                 data = data.slice(++nextLinePosition);
                 lineCount++;
 
-                this.emit('line', completeRow);
+                await new Promise(resolve => {
+                    this.emit('line', completeRow, resolve);
+                });
             }
 
             this.emit('end', lineCount);

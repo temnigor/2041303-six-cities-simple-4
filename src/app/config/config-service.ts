@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { inject, injectable } from 'inversify';
-import { AppComponent } from '../../types/app-component.enum';
+import { AppComponent } from '../../enum/app-component.enum';
 import { LoggerInterface } from '../logger/loger.interfase';
 import { ConfigInterface } from './config.interface';
 import { ConfigSchema, ConfigSchemaEnv } from './config.schema';
