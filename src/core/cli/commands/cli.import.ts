@@ -6,7 +6,7 @@ import { UserServiceInterface } from '../../../modules/user/user.service.interfa
 import { OfferService } from '../../../modules/offer/offer-service.js';
 import { OfferServiceInterface } from '../../../modules/offer/offer-service.interface.js';
 import { DatabaseClientInterface } from '../../database-client/database-client.interface.js';
-import { LoggerInterface } from '../../../app/logger/loger.interfase.js';
+import { LoggerInterface } from '../../../app/logger/loger.interface.js';
 import ConsoleLoggerService from '../logger/console.service..js';
 import { userModel } from '../../../modules/user/user.entity.js';
 import { offerModel } from '../../../modules/offer/offer.entity.js';

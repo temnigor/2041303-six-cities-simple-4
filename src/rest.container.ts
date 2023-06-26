@@ -1,6 +1,6 @@
 import { Container } from 'inversify';
 import ConfigService from './app/config/config-service.js';
-import { LoggerInterface } from './app/logger/loger.interfase.js';
+import { LoggerInterface } from './app/logger/loger.interface.js';
 import { PinoService } from './app/logger/pino.service.js';
 import { MongoService } from './core/database-client/mongo-service.js';
 import { DatabaseClientInterface } from './core/database-client/database-client.interface.js';

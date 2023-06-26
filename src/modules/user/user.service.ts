@@ -1,8 +1,9 @@
 import { types, DocumentType } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
-import { LoggerInterface } from '../../app/logger/loger.interfase';
+import { LoggerInterface } from '../../app/logger/loger.interface';
 import { AppComponent } from '../../enum/app-component.enum.js';
 import CreateUserDTO from './create-user.dto';
+import UpdateUserDTO from './update-user.dto';
 import { UserEntity } from './user.entity.js';
 import { UserServiceInterface } from './user.service.interface';
 
@@ -46,5 +47,16 @@ export class UserService implements UserServiceInterface {
         }
 
         return this.create(data, salt);
+    }
+
+    public async findAndUpdate(
+        id: string,
+        data: UpdateUserDTO,
+    ): Promise<DocumentType<UserEntity> | null> {
+        const updateUser = await this.userModel
+            .findByIdAndUpdate(id, data, { new: true })
+            .exec();
+        this.logger.info('user update');
+        return updateUser;
     }
 }

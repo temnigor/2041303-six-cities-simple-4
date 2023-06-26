@@ -1,11 +1,12 @@
-import { inject } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { DatabaseClientInterface } from '../core/database-client/database-client.interface.js';
 import { getMongoURL } from '../core/helpers/db-url.js';
 import { AppComponent } from '../enum/app-component.enum.js';
 import { ConfigInterface } from './config/config.interface.js';
 import { ConfigSchema } from './config/config.schema.js';
-import { LoggerInterface } from './logger/loger.interfase.js';
+import { LoggerInterface } from './logger/loger.interface.js';
 
+@injectable()
 export default class RestApplication {
     constructor(
         @inject(AppComponent.LoggerInterface)

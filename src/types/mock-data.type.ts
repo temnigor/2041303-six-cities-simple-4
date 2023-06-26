@@ -4,6 +4,7 @@ export type MockData = {
     date: string[];
     town: string[];
     previewImage: string[];
+    houseImage: [];
     premium: string[];
     rating: string[];
     houseType: string[];

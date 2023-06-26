@@ -6,6 +6,7 @@ export type Offer = {
     date: Date;
     town: string;
     previewImage: string;
+    houseImage: string[];
     premium: boolean;
     rating: number;
     houseType: string;

@@ -13,6 +13,7 @@ export class OfferGenerator implements GeneratorInterface {
         const date = getRandomItem(mockData.date);
         const town = getRandomItem(mockData.town);
         const previewImage = getRandomItem(mockData.previewImage);
+        const houseImage = mockData.previewImage;
         const premium = getRandomItem(mockData.premium);
         const rating = getRandomItem(mockData.rating);
         const houseType = getRandomItem(mockData.houseType);
@@ -32,6 +33,7 @@ export class OfferGenerator implements GeneratorInterface {
             date,
             town,
             previewImage,
+            houseImage,
             premium,
             rating,
             houseType,

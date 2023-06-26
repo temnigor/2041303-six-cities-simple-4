@@ -1,4 +1,7 @@
 import convict from 'convict';
+import { ipaddress } from 'convict-format-with-validator';
+
+convict.addFormat(ipaddress);
 
 export type ConfigSchema = {
     PORT: number;

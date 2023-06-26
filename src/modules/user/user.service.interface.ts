@@ -1,5 +1,6 @@
 import { DocumentType } from '@typegoose/typegoose';
 import CreateUserDTO from './create-user.dto.js';
+import UpdateUserDTO from './update-user.dto.js';
 import { UserEntity } from './user.entity.js';
 
 export interface UserServiceInterface {
@@ -13,4 +14,8 @@ export interface UserServiceInterface {
         data: CreateUserDTO,
         salt: string,
     ): Promise<DocumentType<UserEntity>>;
+    findAndUpdate(
+        id: string,
+        data: UpdateUserDTO,
+    ): Promise<DocumentType<UserEntity> | null>;
 }

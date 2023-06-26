@@ -1,4 +1,4 @@
-import { LoggerInterface } from '../../../app/logger/loger.interfase';
+import { LoggerInterface } from '../../../app/logger/loger.interface';
 
 export default class ConsoleLoggerService implements LoggerInterface {
     public debug(message: string, ...args: unknown[]): void {

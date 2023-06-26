@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
-import { AppComponent } from '../../enum/app-component.enum';
-import { commentModel } from './comment.entity';
-import { CommentService } from './comment.service';
+import { AppComponent } from '../../enum/app-component.enum.js';
+import { commentModel } from './comment.entity.js';
+import { CommentService } from './comment.service.js';
 
 export function createCommentContainer() {
     const container = new Container();
