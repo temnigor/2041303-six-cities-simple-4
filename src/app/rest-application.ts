@@ -1,13 +1,17 @@
 import { inject, injectable } from 'inversify';
-import { DatabaseClientInterface } from '../core/database-client/database-client.interface.js';
-import { getMongoURL } from '../core/helpers/db-url.js';
 import { AppComponent } from '../enum/app-component.enum.js';
-import { ConfigInterface } from './config/config.interface.js';
-import { ConfigSchema } from './config/config.schema.js';
-import { LoggerInterface } from './logger/loger.interface.js';
+import { LoggerInterface } from '../common/logger/logger.interface.js';
+import express, { Express } from 'express';
+import { ConfigInterface } from '../common/config/config.interface.js';
+import { ConfigSchema } from '../common/config/config.schema.js';
+import { DatabaseClientInterface } from '../common/database-client/database-client.interface.js';
+import { ControllerInterface } from '../common/controller/controller.interface.js';
+import { ExceptionFilterInterface } from '../common/controller/exceptions-filter/exception-filter.interface.js';
+import { getMongoURL } from '../helpers/db-url.js';
 
 @injectable()
 export default class RestApplication {
+    private expressApplication: Express;
     constructor(
         @inject(AppComponent.LoggerInterface)
         private readonly logger: LoggerInterface,
@@ -15,9 +19,20 @@ export default class RestApplication {
         private readonly config: ConfigInterface<ConfigSchema>,
         @inject(AppComponent.DatabaseInterface)
         private readonly databaseClient: DatabaseClientInterface,
-    ) {}
+        @inject(AppComponent.CommentController)
+        private readonly commentController: ControllerInterface,
+        @inject(AppComponent.ExceptionFilter)
+        private exceptionFilter: ExceptionFilterInterface,
+        @inject(AppComponent.UserController)
+        private userController: ControllerInterface,
+        @inject(AppComponent.OfferController)
+        private offerController: ControllerInterface,
+    ) {
+        this.expressApplication = express();
+    }
 
-    private _initDb() {
+    private async _initDb() {
+        this.logger.info('init Database...');
         const mongoUrl = getMongoURL(
             this.config.get('DB_USER') as string,
             this.config.get('DB_PASSWORD') as string,
@@ -25,17 +40,51 @@ export default class RestApplication {
             this.config.get('DB_PORT') as string,
             this.config.get('DB_NAME') as string,
         );
-        return this.databaseClient.connect(mongoUrl);
+        await this.databaseClient.connect(mongoUrl);
+        this.logger.info('init Database compleat');
+    }
+
+    private async _initServer() {
+        this.logger.info('Try to init server…');
+        const port = this.config.get('PORT');
+        this.expressApplication.listen(port);
+        this.logger.info(
+            `🚀Server started on http://localhost:${this.config.get('PORT')}`,
+        );
+    }
+
+    private _initRouts() {
+        this.logger.info('Try init user routs');
+        this.expressApplication.use('/user', this.userController.router);
+        this.logger.info('user routs init');
+        this.logger.info('Try init offer routs');
+        this.expressApplication.use(this.offerController.router);
+        this.logger.info('offer routs init');
+        this.logger.info('Try init comment routs');
+        this.expressApplication.use('/comment', this.commentController.router);
+        this.logger.info('comment routs init');
+    }
+
+    private async _initMiddleware() {
+        this.logger.info('Global middleware initialization…');
+        this.expressApplication.use(express.json());
+        this.logger.info('Global middleware initialization completed');
+    }
+
+    private async _initExceptionFilter() {
+        this.logger.info('Try init exception filter');
+        this.expressApplication.use(
+            this.exceptionFilter.catch.bind(this.exceptionFilter),
+        );
+        this.logger.info('exception filter completed');
     }
 
     public async init() {
         this.logger.info('Application initialization...');
-        this.logger.info(
-            `Get value from env $PORT: ${this.config.get('PORT')}`,
-        );
-
-        this.logger.info('Init database…');
         await this._initDb();
-        this.logger.info('Init database completed');
+        await this._initRouts();
+        await this._initMiddleware();
+        await this._initExceptionFilter;
+        await this._initServer();
     }
 }
