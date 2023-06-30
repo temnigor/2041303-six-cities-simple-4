@@ -12,10 +12,10 @@ import { StatusCodes } from 'http-status-codes';
 import { OfferServiceInterface } from '../offer/offer-service.interface.js';
 import { Controller } from '../../controller/controller.js';
 import { fillDTO } from '../../../helpers/fill-dto.js';
-import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
-import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
-import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware';
-import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware';
+import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware.js';
+import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware.js';
+import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
 
 type ParamsCommentOffer = {
     offerId: string;

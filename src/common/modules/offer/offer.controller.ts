@@ -14,10 +14,10 @@ import { OfferRDO } from './rdo/offer.rdo.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { Controller } from '../../controller/controller.js';
 import { fillDTO } from '../../../helpers/fill-dto.js';
-import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
-import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
-import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware';
-import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware';
+import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware.js';
+import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware.js';
+import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
 
 const DEFAULT_OFFERS_COUNT_LIMIT = 60;
 type ParamsOfferId = {

@@ -62,12 +62,12 @@ export const ConfigSchemaEnv = convict({
         doc: 'Directory for upload files',
         format: String,
         env: 'UPLOAD_DIRECTORY',
-        default: null,
+        default: '',
     },
     JWT_SECRET: {
         doc: 'Secret for sign JWT',
         format: String,
         env: 'JWT_SECRET',
-        default: null,
+        default: '',
     },
 });

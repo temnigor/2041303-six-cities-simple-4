@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { MiddlewareInterface } from './middleware.interface';
-import HttpError from '../error/http.error';
+import HttpError from '../error/http.error.js';
 
 const { Types } = mongoose;
 

@@ -21,8 +21,8 @@ import * as core from 'express-serve-static-core';
 import LoginUserRDO from './rdo/logen-user.rdo.js';
 import { createJWT } from '../../../helpers/jwt.js';
 import { JWT_ALGORITHM } from './user.constant.js';
-import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware';
-import TokenAndUserRDO from './rdo/token-and -user.rdo';
+import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
+import TokenAndUserRDO from './rdo/token-and -user.rdo.js';
 
 type ParamUser = {
     userId: string;
