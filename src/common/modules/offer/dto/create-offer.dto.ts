@@ -5,7 +5,6 @@ import {
     IsBoolean,
     IsDateString,
     IsEnum,
-    IsMongoId,
     IsObject,
     Matches,
     Max,
@@ -78,7 +77,6 @@ export class CreateOfferDTO {
     })
     public amenity!: AmenityEnum[];
 
-    @IsMongoId({ message: 'userId field must be valid an id' })
     public userId!: string;
 
     @IsObject({ message: 'coordinatesTown is not object' })

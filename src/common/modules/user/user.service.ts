@@ -2,10 +2,11 @@ import { types, DocumentType } from '@typegoose/typegoose';
 import { inject, injectable } from 'inversify';
 import { LoggerInterface } from '../../logger/logger.interface';
 import { AppComponent } from '../../../enum/app-component.enum.js';
-import CreateUserDTO from './create-user.dto';
-import UpdateUserDTO from './update-user.dto';
+import CreateUserDTO from './dto/create-user.dto.js';
+import UpdateUserDTO from './dto/update-user.dto.js';
 import { UserEntity } from './user.entity.js';
 import { UserServiceInterface } from './user.service.interface';
+import { LoginUserDto } from './dto/login-user.dto.js';
 
 @injectable()
 export class UserService implements UserServiceInterface {
@@ -49,5 +50,17 @@ export class UserService implements UserServiceInterface {
             .exec();
         this.logger.info('user update');
         return updateUser;
+    }
+
+    public async verifyUser(
+        dto: LoginUserDto,
+        salt: string,
+    ): Promise<DocumentType<UserEntity> | null> {
+        const user = await this.findByEmail(dto.email);
+
+        if (user && user.verifyPassword(dto.password, salt)) {
+            return user;
+        }
+        return null;
     }
 }

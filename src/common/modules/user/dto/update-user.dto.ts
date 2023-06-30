@@ -1,5 +1,4 @@
 import {
-    IsMongoId,
     IsOptional,
     IsString,
     Matches,
@@ -8,9 +7,6 @@ import {
 } from 'class-validator';
 
 export default class UpdateUserDTO {
-    @IsMongoId({ message: 'id for mongo' })
-    public id!: string;
-
     @IsOptional()
     @IsString({ message: 'is required' })
     @MaxLength(15, { message: 'name length max 15 symbol' })

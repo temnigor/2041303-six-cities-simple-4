@@ -3,7 +3,7 @@ import typegoose, {
     defaultClasses,
     getModelForClass,
 } from '@typegoose/typegoose';
-import { createSHA256 } from '../../core/helpers/common.js';
+import { createSHA256 } from '../../../helpers/sha.js';
 
 const { prop, modelOptions } = typegoose;
 const DEFAULT_AVATAR = 'avatar-max.jpg';
@@ -25,7 +25,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     public email: string;
 
     @prop({ type: String, default: DEFAULT_AVATAR })
-    public avatarPath: string;
+    public avatarPath?: string;
 
     @prop({
         required: true,
@@ -54,6 +54,11 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
     public getPassword() {
         return this.password;
+    }
+
+    public verifyPassword(password: string, salt: string) {
+        const hashPassword = createSHA256(password, salt);
+        return hashPassword === this.password;
     }
 }
 

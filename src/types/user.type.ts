@@ -1,6 +1,6 @@
 export type User = {
     email: string;
-    avatarPath: string;
+    avatarPath?: string;
     name: string;
     userType: boolean;
 };

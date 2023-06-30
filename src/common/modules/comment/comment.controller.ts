@@ -15,10 +15,14 @@ import { fillDTO } from '../../../helpers/fill-dto.js';
 import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
 import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware';
+import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware';
 
 type ParamsCommentOffer = {
     offerId: string;
     commentCount: string;
+};
+type ParamsCommentCreate = {
+    offerId: string;
 };
 
 const DEFAULT_COMMENT_COUNT_LIMIT = 50;
@@ -47,12 +51,14 @@ export class CommentController extends Controller {
             method: HttpMethod.Post,
             handler: this.create,
             middlewares: [
-                new ValidateDtoMiddleware(CreateCommentDTO),
+                new ValidateObjectIdMiddleware('offerId'),
                 new DocumentExistsMiddleware(
                     this.commentService,
                     'Comment',
                     'commentId',
                 ),
+                new PrivateRouteMiddleware(),
+                new ValidateDtoMiddleware(CreateCommentDTO),
             ],
         });
     }
@@ -85,24 +91,29 @@ export class CommentController extends Controller {
 
     public async create(
         {
+            params,
             body,
+            user,
         }: Request<
-            Record<string, unknown>,
+            core.ParamsDictionary | ParamsCommentCreate,
             Record<string, unknown>,
             CreateCommentDTO
         >,
         res: Response,
     ): Promise<void> {
-        if (!this.offerService.exists(body.offerId)) {
+        if (!(await this.offerService.exists(params.offerId))) {
             throw new HttpError(
                 StatusCodes.NOT_FOUND,
                 'Error offer not found',
                 'CommentController',
             );
         }
-        const create = await this.commentService.create(body);
+        const create = await this.commentService.create({
+            ...body,
+            userId: user.id,
+        });
         const comment = await this.commentService.findById(create.id);
-        await this.offerService.incCommentCount(body.offerId);
+        await this.offerService.incCommentCount(params.offerId);
         this.created(res, fillDTO(CommentRDO, comment));
         throw new HttpError(
             StatusCodes.BAD_REQUEST,
