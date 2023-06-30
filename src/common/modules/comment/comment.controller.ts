@@ -14,6 +14,7 @@ import { Controller } from '../../controller/controller.js';
 import { fillDTO } from '../../../helpers/fill-dto.js';
 import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
+import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware';
 
 type ParamsCommentOffer = {
     offerId: string;
@@ -42,10 +43,17 @@ export class CommentController extends Controller {
             middlewares: [new ValidateObjectIdMiddleware('offerId')],
         });
         this.addRoute({
-            path: '/',
+            path: '/:offerId',
             method: HttpMethod.Post,
             handler: this.create,
-            middlewares: [new ValidateDtoMiddleware(CreateCommentDTO)],
+            middlewares: [
+                new ValidateDtoMiddleware(CreateCommentDTO),
+                new DocumentExistsMiddleware(
+                    this.commentService,
+                    'Comment',
+                    'commentId',
+                ),
+            ],
         });
     }
 

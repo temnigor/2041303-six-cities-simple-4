@@ -25,6 +25,10 @@ export class CommentService implements CommentServiceInterface {
         return this.commentModel.findById(id);
     }
 
+    public async exists(id: string): Promise<boolean> {
+        return this.commentModel.exists({ id }) !== null;
+    }
+
     public async find(
         offerId: string,
         count: number,

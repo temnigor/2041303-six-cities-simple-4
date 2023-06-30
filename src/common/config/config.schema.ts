@@ -11,6 +11,7 @@ export type ConfigSchema = {
     DB_PASSWORD: string;
     DB_PORT: string;
     DB_NAME: string;
+    UPLOAD_DIRECTORY: string;
 };
 
 export const ConfigSchemaEnv = convict({
@@ -55,5 +56,11 @@ export const ConfigSchemaEnv = convict({
         format: String,
         env: 'DB_NAME',
         default: 'six-sity-mongodb',
+    },
+    UPLOAD_DIRECTORY: {
+        doc: 'Directory for upload files',
+        format: String,
+        env: 'UPLOAD_DIRECTORY',
+        default: null,
     },
 });

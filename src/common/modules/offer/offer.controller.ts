@@ -16,6 +16,7 @@ import { Controller } from '../../controller/controller.js';
 import { fillDTO } from '../../../helpers/fill-dto.js';
 import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
+import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware';
 
 const DEFAULT_OFFERS_COUNT_LIMIT = 60;
 type ParamsOfferId = {
@@ -45,6 +46,11 @@ export class OfferController extends Controller {
             handler: this.update,
             middlewares: [
                 new ValidateObjectIdMiddleware('offerId'),
+                new DocumentExistsMiddleware(
+                    this.offerService,
+                    'Offer',
+                    'offerId',
+                ),
                 new ValidateDtoMiddleware(UpdateOfferDto),
             ],
         });
@@ -52,7 +58,14 @@ export class OfferController extends Controller {
             path: '/delete/:offerId',
             method: HttpMethod.Delete,
             handler: this.destroy,
-            middlewares: [new ValidateObjectIdMiddleware('offerId')],
+            middlewares: [
+                new ValidateObjectIdMiddleware('offerId'),
+                new DocumentExistsMiddleware(
+                    this.offerService,
+                    'Offer',
+                    'offerId',
+                ),
+            ],
         });
         this.addRoute({
             path: '/offers/:offerCount',
@@ -63,7 +76,14 @@ export class OfferController extends Controller {
             path: '/:offerId',
             method: HttpMethod.Get,
             handler: this.show,
-            middlewares: [new ValidateObjectIdMiddleware('offerId')],
+            middlewares: [
+                new ValidateObjectIdMiddleware('offerId'),
+                new DocumentExistsMiddleware(
+                    this.offerService,
+                    'Offer',
+                    'offerId',
+                ),
+            ],
         });
     }
 
@@ -99,14 +119,6 @@ export class OfferController extends Controller {
         >,
         res: Response,
     ) {
-        const existOffer = await this.offerService.exists(params.offerId);
-        if (!existOffer) {
-            throw new HttpError(
-                StatusCodes.CONFLICT,
-                'Offer not exist',
-                'OfferController',
-            );
-        }
         await this.offerService.updateById(params.offerId, body);
         const offer = await this.offerService.findById(params.offerId);
         this.ok(res, fillDTO(OfferRDO, offer));
@@ -117,14 +129,7 @@ export class OfferController extends Controller {
         res: Response,
     ) {
         const { offerId } = params;
-        const existOffer = await this.offerService.exists(offerId);
-        if (!existOffer) {
-            throw new HttpError(
-                StatusCodes.CONFLICT,
-                'Offer not exist',
-                'OfferController',
-            );
-        }
+
         await this.offerService.deleteById(offerId);
         this.noContent(res, `offer id${offerId} was delete `);
         throw new HttpError(StatusCodes.BAD_REQUEST, 'Oops', 'OfferController');
@@ -148,15 +153,7 @@ export class OfferController extends Controller {
         res: Response,
     ): Promise<void> {
         const { offerId } = params;
-        const offer = this.offerService.findById(params.offerId);
-
-        if (!offer) {
-            throw new HttpError(
-                StatusCodes.NOT_FOUND,
-                `Offer with id ${offerId} not found.`,
-                'OfferController',
-            );
-        }
+        const offer = this.offerService.findById(offerId);
         this.ok(res, fillDTO(OfferRDO, offer));
     }
 }

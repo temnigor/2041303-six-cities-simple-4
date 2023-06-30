@@ -12,4 +12,5 @@ coverage
 test.js
 *.env
 /data
+/upload/
 

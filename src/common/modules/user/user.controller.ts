@@ -16,6 +16,8 @@ import { ConfigInterface } from '../../config/config.interface';
 import { ConfigSchema } from '../../config/config.schema';
 import { fillDTO } from '../../../helpers/fill-dto.js';
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware';
+import { UploadFileMiddleware } from '../../middleware/upload-file.middleware';
+import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware';
 
 @injectable()
 export class UserController extends Controller {
@@ -46,6 +48,18 @@ export class UserController extends Controller {
             method: HttpMethod.Post,
             handler: this.login,
             middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
+        });
+        this.addRoute({
+            path: '/:userId/avatar',
+            method: HttpMethod.Post,
+            handler: this.uploadAvatar,
+            middlewares: [
+                new ValidateObjectIdMiddleware('userId'),
+                new UploadFileMiddleware(
+                    this.configService.get('UPLOAD_DIRECTORY') as string,
+                    'avatar',
+                ),
+            ],
         });
     }
 
@@ -121,5 +135,11 @@ export class UserController extends Controller {
             'Not implemented',
             'UserController',
         );
+    }
+
+    public async uploadAvatar(req: Request, res: Response) {
+        this.created(res, {
+            filepath: req.file?.path,
+        });
     }
 }

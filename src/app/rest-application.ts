@@ -69,6 +69,10 @@ export default class RestApplication {
         this.logger.info('Global middleware initialization…');
         this.expressApplication.use(express.json());
         this.logger.info('Global middleware initialization completed');
+        this.expressApplication.use(
+            'upload/',
+            express.static(this.config.get('UPLOAD_DIRECTORY') as string),
+        );
     }
 
     private async _initExceptionFilter() {
