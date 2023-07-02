@@ -23,6 +23,7 @@ import { UploadFileMiddleware } from './../../middleware/upload-file.middleware.
 import { UploadManyFileMiddleware } from '../../middleware/upload-many-file.middleware.js';
 import UploadHouseImageRDO from './rdo/upload-house-image.rdo.js';
 import UploadPreviewImageRDO from './rdo/upload-preview-image.rdo.js';
+import { CommentServiceInterface } from '../comment/comment.service.interface';
 
 const DEFAULT_OFFERS_COUNT_LIMIT = 60;
 type ParamsOfferId = {
@@ -40,6 +41,8 @@ export class OfferController extends Controller {
         private readonly offerService: OfferServiceInterface,
         @inject(AppComponent.ConfigInterface)
         configService: ConfigInterface<ConfigSchema>,
+        @inject(AppComponent.CommentServiceInterface)
+        private readonly commentService: CommentServiceInterface,
     ) {
         super(logger, configService);
         this.addRoute({
@@ -174,6 +177,7 @@ export class OfferController extends Controller {
         const { offerId } = params;
 
         await this.offerService.deleteById(offerId);
+        await this.commentService.destroyByOfferId(offerId);
         this.noContent(res, `offer id${offerId} was delete `);
         throw new HttpError(StatusCodes.BAD_REQUEST, 'Oops', 'OfferController');
     }

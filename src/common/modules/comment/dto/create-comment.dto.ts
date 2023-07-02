@@ -1,12 +1,20 @@
 import { Max, MaxLength, Min, MinLength } from 'class-validator';
+import {
+    RATING_MAX_COUNT,
+    RATING_MIN_COUNT,
+} from '../../offer/validate-offer-constant.js';
+import {
+    COMMENT_DESCRIPTION_MAX,
+    COMMENT_DESCRIPTION_MIN,
+} from '../validate-comment-constant.js';
 
 export class CreateCommentDTO {
-    @MaxLength(1024, { message: 'Max length comment 1024' })
-    @MinLength(5, { message: 'Min length comment 5' })
+    @MaxLength(COMMENT_DESCRIPTION_MAX, { message: 'Max length comment 1024' })
+    @MinLength(COMMENT_DESCRIPTION_MIN, { message: 'Min length comment 5' })
     public description!: string;
 
-    @Max(5, { message: 'Max rating 5' })
-    @Min(1, { message: 'Min rating 1' })
+    @Max(RATING_MAX_COUNT, { message: 'Max rating 5' })
+    @Min(RATING_MIN_COUNT, { message: 'Min rating 1' })
     public rating!: number;
 
     public userId!: string;

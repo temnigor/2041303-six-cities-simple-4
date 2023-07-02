@@ -10,4 +10,6 @@ export interface CommentServiceInterface extends DocumentExistsInterface {
         offerId: string,
         count: number,
     ): Promise<DocumentType<CommentEntity>[] | null>;
+    destroyByOfferId(offerId: string): Promise<void>;
+    avgRating(offerId: string): Promise<number | undefined>;
 }

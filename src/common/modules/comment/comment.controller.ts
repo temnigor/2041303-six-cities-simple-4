@@ -18,6 +18,7 @@ import { DocumentExistsMiddleware } from '../../middleware/document-exist.middle
 import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
 import { ConfigInterface } from '../../config/config.interface';
 import { ConfigSchema } from '../../config/config.schema';
+import { validateRatingAvg } from '../../../helpers/validate-rating-avg.js';
 
 type ParamsCommentOffer = {
     offerId: string;
@@ -48,7 +49,14 @@ export class CommentController extends Controller {
             path: '/:offerId/:commentCount',
             method: HttpMethod.Get,
             handler: this.index,
-            middlewares: [new ValidateObjectIdMiddleware('offerId')],
+            middlewares: [
+                new DocumentExistsMiddleware(
+                    this.offerService,
+                    'OfferController',
+                    'offerId',
+                ),
+                new ValidateObjectIdMiddleware('offerId'),
+            ],
         });
         this.addRoute({
             path: '/:offerId',
@@ -62,6 +70,11 @@ export class CommentController extends Controller {
                     'commentId',
                 ),
                 new PrivateRouteMiddleware(),
+                new DocumentExistsMiddleware(
+                    this.offerService,
+                    'OfferController',
+                    'offerId',
+                ),
                 new ValidateDtoMiddleware(CreateCommentDTO),
             ],
         });
@@ -118,11 +131,12 @@ export class CommentController extends Controller {
         });
         const comment = await this.commentService.findById(create.id);
         await this.offerService.incCommentCount(params.offerId);
-        this.created(res, fillDTO(CommentRDO, comment));
-        throw new HttpError(
-            StatusCodes.BAD_REQUEST,
-            'Error comment not create',
-            'CommentController',
+        const ratingAvg = validateRatingAvg(
+            await this.commentService.avgRating(params.offerId),
         );
+        await this.offerService.updateRatingById(params.offerId, {
+            rating: ratingAvg,
+        });
+        this.created(res, fillDTO(CommentRDO, comment));
     }
 }

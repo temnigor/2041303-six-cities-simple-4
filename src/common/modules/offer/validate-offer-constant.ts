@@ -1,0 +1,14 @@
+export const OFFER_NAME_MAX_LENGTH = 100;
+export const OFFER_NAME_MIN_LENGTH = 10;
+export const OFFER_DESCRIPTION_MAX_LENGTH = 1024;
+export const OFFER_DESCRIPTION_MIN_LENGTH = 20;
+export const OFFER_IMAGE_LENGTH = 256;
+export const OFFER_HOUSE_IMAGE_SIZE = 6;
+export const OFFER_ROOM_SIZE_MAX = 8;
+export const OFFER_ROOM_SIZE_MIN = 1;
+export const OFFER_GUEST_SIZE_MAX = 10;
+export const OFFER_GUEST_SIZE_MIN = 1;
+export const OFFER_PRISE_SIZE_MAX = 100000;
+export const OFFER_PRISE_SIZE_MIN = 100;
+export const RATING_MAX_COUNT = 5;
+export const RATING_MIN_COUNT = 1;

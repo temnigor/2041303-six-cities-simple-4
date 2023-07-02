@@ -1,4 +1,5 @@
 import { injectable, inject } from 'inversify';
+import mongoose from 'mongoose';
 import { LoggerInterface } from '../../logger/logger.interface';
 import { AppComponent } from '../../../enum/app-component.enum.js';
 import { types } from '@typegoose/typegoose';
@@ -42,20 +43,21 @@ export class CommentService implements CommentServiceInterface {
     }
 
     public async destroyByOfferId(offerId: string) {
-        return this.commentModel.deleteMany({ offerId: offerId });
+        await this.commentModel.deleteMany({ offerId: offerId });
+        console.log(`all comment of ${offerId} delete`);
     }
 
-    public async updateAvgRating(offerId: string): Promise<number | undefined> {
+    public async avgRating(offerId: string): Promise<number | undefined> {
         const aggregatedComments = await this.commentModel.aggregate([
-            { $match: { offerId: new ObjectId(offerId) } },
+            { $match: { offerId: new mongoose.Types.ObjectId(offerId) } },
             {
                 $group: {
                     _id: '$offerId',
-                    avgRating: { $avg: '$rating' },
+                    rating: { $avg: '$rating' },
                 },
             },
         ]);
 
-        return aggregatedComments[FIRST_ARRAY_ELEMENT]?.avgRating;
+        return aggregatedComments[0].rating;
     }
 }

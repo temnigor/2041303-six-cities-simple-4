@@ -1,23 +1,21 @@
+import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import {
-    IsOptional,
-    IsString,
-    Matches,
-    MaxLength,
-    MinLength,
-} from 'class-validator';
+    USER_IMAGE_LENGTH,
+    USER_NAME_MAX,
+    USER_NAME_MIN,
+} from '../user.constant';
 
 export default class UpdateUserDTO {
     @IsOptional()
     @IsString({ message: 'is required' })
-    @MaxLength(15, { message: 'name length max 15 symbol' })
-    @MinLength(1, { message: 'name min length 1' })
+    @MaxLength(USER_NAME_MAX, { message: 'name length max 15 symbol' })
+    @MinLength(USER_NAME_MIN, { message: 'name min length 1' })
     public name?: string;
 
     @IsOptional()
-    @MaxLength(256, { each: true, message: 'Too short for field «image»' })
-    @Matches(/.jpg|.png/, {
+    @MaxLength(USER_IMAGE_LENGTH, {
         each: true,
-        message: 'image must have format .jpg or .png',
+        message: 'Too short for field «image»',
     })
     public avatarPath?: string;
 }

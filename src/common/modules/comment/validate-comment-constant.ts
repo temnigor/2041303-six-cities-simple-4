@@ -1,0 +1,2 @@
+export const COMMENT_DESCRIPTION_MAX = 1024;
+export const COMMENT_DESCRIPTION_MIN = 5;

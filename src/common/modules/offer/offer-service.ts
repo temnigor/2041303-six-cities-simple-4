@@ -8,6 +8,7 @@ import { CreateOfferDTO } from './dto/create-offer.dto';
 import { OfferServiceInterface } from './offer-service.interface';
 import { OfferEntity } from './offer.entity.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { UpdateOfferRatingDto } from './dto/update-offer.rating.dto';
 
 @injectable()
 export class OfferService implements OfferServiceInterface {
@@ -58,6 +59,16 @@ export class OfferService implements OfferServiceInterface {
                 },
             })
             .exec();
+    }
+
+    public async updateRatingById(
+        offerId: string,
+        dto: UpdateOfferRatingDto,
+    ): Promise<void> {
+        await this.offerModel
+            .findByIdAndUpdate(offerId, dto, { new: true })
+            .exec();
+        this.logger.info('rating update');
     }
 
     public async find(limit: number): Promise<DocumentType<OfferEntity>[]> {
