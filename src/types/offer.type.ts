@@ -1,23 +1,23 @@
+import { AmenityEnum } from '../enum/amenity.enum';
+import { HouseType } from '../enum/house-type.enum';
+import { Town } from '../enum/town.enum';
 import { Coordinates } from './coordinates.type';
 
 export type Offer = {
     offerName: string;
     description: string;
-    date: Date;
-    town: string;
+    town: Town;
     previewImage: string;
     houseImage: string[];
     premium: boolean;
-    rating: number;
-    houseType: string;
+    houseType: HouseType;
     room: number;
     guest: number;
     price: number;
-    amenity: string[];
+    amenity: AmenityEnum[];
     user: {
         name: string;
         email: string;
-        avatarPath: string;
         userType: boolean;
     };
     coordinatesTown: Coordinates;

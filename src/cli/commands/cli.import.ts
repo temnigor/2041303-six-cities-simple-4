@@ -49,12 +49,10 @@ export default class CliImport implements CliCommandInterface {
             await this.offerService.create({
                 offerName: offer.offerName,
                 description: offer.description,
-                date: offer.date,
                 town: offer.town,
                 previewImage: offer.previewImage,
                 houseImage: offer.houseImage,
                 premium: offer.premium,
-                rating: offer.rating,
                 houseType: offer.houseType,
                 room: offer.room,
                 guest: offer.guest,

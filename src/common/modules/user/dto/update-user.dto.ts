@@ -3,7 +3,7 @@ import {
     USER_IMAGE_LENGTH,
     USER_NAME_MAX,
     USER_NAME_MIN,
-} from '../user.constant';
+} from '../user.constant.js';
 
 export default class UpdateUserDTO {
     @IsOptional()

@@ -7,7 +7,7 @@ import UpdateUserDTO from './dto/update-user.dto.js';
 import { UserEntity } from './user.entity.js';
 import { UserServiceInterface } from './user.service.interface';
 import { LoginUserDto } from './dto/login-user.dto.js';
-import { DEFAULT_AVATAR } from './user.constant';
+import { DEFAULT_AVATAR } from './user.constant.js';
 
 @injectable()
 export class UserService implements UserServiceInterface {

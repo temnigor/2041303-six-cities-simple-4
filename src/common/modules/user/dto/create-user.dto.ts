@@ -11,7 +11,7 @@ import {
     USER_NAME_MIN,
     USER_PASSWORD_MAX,
     USER_PASSWORD_MIN,
-} from '../user.constant';
+} from '../user.constant.js';
 
 export default class CreateUserDTO {
     @IsEmail({}, { message: 'email must be valid address' })

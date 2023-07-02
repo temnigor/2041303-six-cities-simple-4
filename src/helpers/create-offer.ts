@@ -1,4 +1,6 @@
-import { HouseType } from '../enum/house-type.enum';
+import { AmenityEnum } from '../enum/amenity.enum.js';
+import { HouseType } from '../enum/house-type.enum.js';
+import { Town } from '../enum/town.enum.js';
 import { Coordinates } from '../types/coordinates.type';
 import { Offer } from '../types/offer.type';
 
@@ -17,12 +19,10 @@ export function createOffer(offerString: string): Offer {
     const [
         offerName,
         description,
-        date,
         town,
         previewImage,
         houseImage,
         premium,
-        rating,
         houseType,
         room,
         guest,
@@ -30,7 +30,6 @@ export function createOffer(offerString: string): Offer {
         amenity,
         name,
         email,
-        avatarPath,
         userType,
         coordinatesTown,
     ] = offerString.split('\t');
@@ -38,22 +37,19 @@ export function createOffer(offerString: string): Offer {
     return {
         offerName,
         description,
-        date: new Date(date),
-        town,
+        town: town as Town,
         previewImage,
         houseImage: houseImage.split(','),
         premium: Boolean(Number.parseInt(premium, 10)),
-        rating: Number.parseInt(rating, 10),
         houseType:
             HouseType[houseType as 'apartment' | 'house' | 'room' | 'hotel'],
         room: Number.parseInt(room, 10),
         guest: Number.parseInt(guest, 10),
         price: Number.parseInt(price, 10),
-        amenity: amenity.split(','),
+        amenity: amenity.split(',') as AmenityEnum[],
         user: {
             name,
             email,
-            avatarPath,
             userType: Boolean(Number.parseInt(userType, 10)),
         },
 

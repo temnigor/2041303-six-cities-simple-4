@@ -7,6 +7,7 @@ export type ConfigSchema = {
     PORT: number;
     SALT: string;
     HOST: string;
+    IMPORT_PORT: number;
     DB_HOST: string;
     DB_USER: string;
     DB_PASSWORD: string;
@@ -23,6 +24,12 @@ export const ConfigSchemaEnv = convict({
         env: 'PORT',
         format: 'port',
         default: 3232,
+    },
+    IMPORT_PORT: {
+        doc: 'port to bind',
+        env: 'PORT',
+        format: 'port',
+        default: 3131,
     },
     SALT: {
         doc: 'Salt for password hash',

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import HttpError from '../error/http.error';
+import HttpError from '../error/http.error.js';
 import { MiddlewareInterface } from './middleware.interface';
 
 export class CheckUserRightOfUser implements MiddlewareInterface {
