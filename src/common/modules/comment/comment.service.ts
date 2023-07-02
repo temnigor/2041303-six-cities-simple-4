@@ -44,4 +44,18 @@ export class CommentService implements CommentServiceInterface {
     public async destroyByOfferId(offerId: string) {
         return this.commentModel.deleteMany({ offerId: offerId });
     }
+
+    public async updateAvgRating(offerId: string): Promise<number | undefined> {
+        const aggregatedComments = await this.commentModel.aggregate([
+            { $match: { offerId: new ObjectId(offerId) } },
+            {
+                $group: {
+                    _id: '$offerId',
+                    avgRating: { $avg: '$rating' },
+                },
+            },
+        ]);
+
+        return aggregatedComments[FIRST_ARRAY_ELEMENT]?.avgRating;
+    }
 }
