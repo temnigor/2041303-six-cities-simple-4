@@ -6,6 +6,7 @@ convict.addFormat(ipaddress);
 export type ConfigSchema = {
     PORT: number;
     SALT: string;
+    HOST: string;
     DB_HOST: string;
     DB_USER: string;
     DB_PASSWORD: string;
@@ -13,6 +14,7 @@ export type ConfigSchema = {
     DB_NAME: string;
     UPLOAD_DIRECTORY: string;
     JWT_SECRET: string;
+    STATIC_DIRECTORY_PATH: string;
 };
 
 export const ConfigSchemaEnv = convict({
@@ -27,6 +29,12 @@ export const ConfigSchemaEnv = convict({
         format: String,
         env: 'SALT',
         default: 'secret',
+    },
+    HOST: {
+        doc: 'Host where started service',
+        format: String,
+        env: 'HOST',
+        default: 'localhost',
     },
     DB_HOST: {
         doc: 'IP address of the database server (MongoDB)',
@@ -69,5 +77,11 @@ export const ConfigSchemaEnv = convict({
         format: String,
         env: 'JWT_SECRET',
         default: '',
+    },
+    STATIC_DIRECTORY_PATH: {
+        doc: 'Path to directory with static resources',
+        format: String,
+        env: 'STATIC_DIRECTORY_PATH',
+        default: 'static',
     },
 });

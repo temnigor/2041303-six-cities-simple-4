@@ -3,10 +3,8 @@ import {
     ArrayMinSize,
     IsArray,
     IsBoolean,
-    IsDateString,
     IsEnum,
     IsObject,
-    Matches,
     Max,
     MaxLength,
     Min,
@@ -26,34 +24,20 @@ export class CreateOfferDTO {
     @MinLength(20, { message: 'Min Length offer description 20' })
     public description!: string;
 
-    @IsDateString({}, { message: 'postDate must be valid ISO date' })
-    public date!: Date;
-
     @IsEnum(Town, { message: 'One of 6 town' })
     public town!: Town;
 
     @MaxLength(256, { message: 'Too short for field «image»' })
-    @Matches(/.jpg |.png/, {
-        message: 'image must have format .jpg or .png',
-    })
     public previewImage!: string;
 
     @IsArray({ message: 'Field house image must be an array' })
     @ArrayMaxSize(6, { message: 'Max array length 6' })
     @ArrayMinSize(6, { message: 'Min array length 6' })
     @MaxLength(256, { each: true, message: 'Too short for field «image»' })
-    @Matches(/.jpg|.png/, {
-        each: true,
-        message: 'image must have format .jpg or .png',
-    })
     public houseImage!: string[];
 
     @IsBoolean({ message: 'premium mast be boolean' })
     public premium!: boolean;
-
-    @Max(0, { message: 'Max rating 5' })
-    @Min(0, { message: 'Min length 1' })
-    public rating!: number;
 
     @IsEnum(HouseType, { message: 'One of house type' })
     public houseType!: HouseType;

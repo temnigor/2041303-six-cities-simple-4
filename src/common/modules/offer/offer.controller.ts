@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import * as core from 'express-serve-static-core';
 import { StatusCodes } from 'http-status-codes';
 import { inject, injectable } from 'inversify';
-
 import { LoggerInterface } from '../../logger/logger.interface';
 import HttpError from '../../error/http.error.js';
 import { AppComponent } from '../../../enum/app-component.enum.js';
@@ -18,6 +17,12 @@ import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.m
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware.js';
 import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
+import { ConfigInterface } from '../../config/config.interface';
+import { ConfigSchema } from '../../config/config.schema';
+import { UploadFileMiddleware } from './../../middleware/upload-file.middleware.js';
+import { UploadManyFileMiddleware } from '../../middleware/upload-many-file.middleware.js';
+import UploadHouseImageRDO from './rdo/upload-house-image.rdo.js';
+import UploadPreviewImageRDO from './rdo/upload-preview-image.rdo.js';
 
 const DEFAULT_OFFERS_COUNT_LIMIT = 60;
 type ParamsOfferId = {
@@ -33,8 +38,10 @@ export class OfferController extends Controller {
         @inject(AppComponent.LoggerInterface) logger: LoggerInterface,
         @inject(AppComponent.OfferServiceInterface)
         private readonly offerService: OfferServiceInterface,
+        @inject(AppComponent.ConfigInterface)
+        configService: ConfigInterface<ConfigSchema>,
     ) {
-        super(logger);
+        super(logger, configService);
         this.addRoute({
             path: '/create',
             method: HttpMethod.Post,
@@ -49,13 +56,13 @@ export class OfferController extends Controller {
             method: HttpMethod.Patch,
             handler: this.update,
             middlewares: [
+                new PrivateRouteMiddleware(),
                 new ValidateObjectIdMiddleware('offerId'),
                 new DocumentExistsMiddleware(
                     this.offerService,
                     'Offer',
                     'offerId',
                 ),
-                new PrivateRouteMiddleware(),
                 new ValidateDtoMiddleware(UpdateOfferDto),
             ],
         });
@@ -88,6 +95,32 @@ export class OfferController extends Controller {
                     this.offerService,
                     'Offer',
                     'offerId',
+                ),
+            ],
+        });
+        this.addRoute({
+            path: '/:offerId/image',
+            method: HttpMethod.Post,
+            handler: this.uploadPreview,
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('offerId'),
+                new UploadFileMiddleware(
+                    this.configService.get('UPLOAD_DIRECTORY') as string,
+                    'previewImage',
+                ),
+            ],
+        });
+        this.addRoute({
+            path: '/:offerId/images',
+            method: HttpMethod.Post,
+            handler: this.uploadHouseImage,
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('offerId'),
+                new UploadManyFileMiddleware(
+                    this.configService.get('UPLOAD_DIRECTORY') as string,
+                    'houseImage',
                 ),
             ],
         });
@@ -155,7 +188,9 @@ export class OfferController extends Controller {
             count = DEFAULT_OFFERS_COUNT_LIMIT;
         }
         const offers = await this.offerService.find(count);
-        this.ok(res, fillDTO(ManyOfferRDO, offers));
+        const offersResponse = fillDTO(ManyOfferRDO, offers);
+        console.log(offersResponse);
+        this.ok<ManyOfferRDO>(res, offersResponse);
     }
 
     public async show(
@@ -163,7 +198,36 @@ export class OfferController extends Controller {
         res: Response,
     ): Promise<void> {
         const { offerId } = params;
-        const offer = this.offerService.findById(offerId);
+        const offer = await this.offerService.findById(offerId);
         this.ok(res, fillDTO(OfferRDO, offer));
+    }
+
+    public async uploadPreview(
+        req: Request<
+            core.ParamsDictionary | ParamsOfferId,
+            Record<string, unknown>
+        >,
+        res: Response,
+    ) {
+        const { offerId } = req.params;
+        const updateDto = { previewImage: req.file?.filename };
+        await this.offerService.updateById(offerId, updateDto);
+        this.created(res, fillDTO(UploadPreviewImageRDO, { updateDto }));
+    }
+
+    public async uploadHouseImage(
+        { params, files }: Request<core.ParamsDictionary | ParamsOfferId>,
+        res: Response,
+    ) {
+        const { offerId } = params;
+
+        const houseImage = (files as Express.Multer.File[])?.map(
+            file => file.filename,
+        ) as [string, string, string, string, string, string];
+
+        const updatedOffer = await this.offerService.updateById(offerId, {
+            houseImage,
+        });
+        this.ok(res, fillDTO(UploadHouseImageRDO, updatedOffer));
     }
 }

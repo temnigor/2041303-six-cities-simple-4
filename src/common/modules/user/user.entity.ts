@@ -17,25 +17,20 @@ export interface UserEntity extends defaultClasses.Base {}
 })
 export class UserEntity extends defaultClasses.TimeStamps implements User {
     @prop({
-        unique: true,
         required: true,
-        match: [/^([\w-\\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Email is incorrect'],
-        default: '',
     })
-    public email: string;
+    public email!: string;
 
-    @prop({ type: String, default: DEFAULT_AVATAR })
+    @prop({ required: false, type: String, default: DEFAULT_AVATAR })
     public avatarPath?: string;
 
     @prop({
         required: true,
-        maxlength: [15, 'max length 15'],
-        minlength: [1, 'min length 1'],
     })
-    public name: string;
+    public name!: string;
 
-    @prop({ type: Boolean })
-    public userType: boolean;
+    @prop({ required: true, type: Boolean })
+    public userType!: boolean;
 
     @prop({ required: true })
     private password?: string;

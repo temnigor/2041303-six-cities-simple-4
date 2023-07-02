@@ -1,3 +1,4 @@
+import cors from 'cors';
 import { inject, injectable } from 'inversify';
 import { AppComponent } from '../enum/app-component.enum.js';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
@@ -6,9 +7,10 @@ import { ConfigInterface } from '../common/config/config.interface.js';
 import { ConfigSchema } from '../common/config/config.schema.js';
 import { DatabaseClientInterface } from '../common/database-client/database-client.interface.js';
 import { ControllerInterface } from '../common/controller/controller.interface.js';
-import { ExceptionFilterInterface } from '../common/controller/exceptions-filter/exception-filter.interface.js';
+import { ExceptionFilterInterface } from '../common/exceptions-filter/exception-filter.interface.js';
 import { getMongoURL } from '../helpers/db-url.js';
 import { AuthenticateMiddleware } from '../common/middleware/authenticate.middleware.js';
+import { getFullServerPath } from '../helpers/server-path.js';
 
 @injectable()
 export default class RestApplication {
@@ -22,12 +24,16 @@ export default class RestApplication {
         private readonly databaseClient: DatabaseClientInterface,
         @inject(AppComponent.CommentController)
         private readonly commentController: ControllerInterface,
-        @inject(AppComponent.ExceptionFilter)
-        private exceptionFilter: ExceptionFilterInterface,
+        @inject(AppComponent.HttpErrorExceptionFilter)
+        private readonly httpErrorExceptionFilter: ExceptionFilterInterface,
         @inject(AppComponent.UserController)
         private userController: ControllerInterface,
         @inject(AppComponent.OfferController)
         private offerController: ControllerInterface,
+        @inject(AppComponent.BaseExceptionFilter)
+        private readonly baseExceptionFilter: ExceptionFilterInterface,
+        @inject(AppComponent.ValidationExceptionFilter)
+        private readonly validationExceptionFilter: ExceptionFilterInterface,
     ) {
         this.expressApplication = express();
     }
@@ -50,7 +56,10 @@ export default class RestApplication {
         const port = this.config.get('PORT');
         this.expressApplication.listen(port);
         this.logger.info(
-            `🚀Server started on http://localhost:${this.config.get('PORT')}`,
+            `🚀Server started on ${getFullServerPath(
+                this.config.get('HOST') as string,
+                this.config.get('PORT') as number,
+            )}`,
         );
     }
 
@@ -64,6 +73,10 @@ export default class RestApplication {
         this.logger.info('Try init comment routs');
         this.expressApplication.use('/comment', this.commentController.router);
         this.logger.info('comment routs init');
+        this.expressApplication.use(
+            '/static',
+            express.static(this.config.get('STATIC_DIRECTORY_PATH') as string),
+        );
     }
 
     private async _initMiddleware() {
@@ -79,24 +92,35 @@ export default class RestApplication {
         this.expressApplication.use(
             authenticateMiddleware.execute.bind(authenticateMiddleware),
         );
+        this.expressApplication.use(cors());
 
         this.logger.info('Global middleware initialization completed');
     }
 
     private async _initExceptionFilter() {
-        this.logger.info('Try init exception filter');
+        this.logger.info('Try init exceptions filter');
         this.expressApplication.use(
-            this.exceptionFilter.catch.bind(this.exceptionFilter),
+            this.validationExceptionFilter.catch.bind(
+                this.validationExceptionFilter,
+            ),
         );
-        this.logger.info('exception filter completed');
+        this.expressApplication.use(
+            this.httpErrorExceptionFilter.catch.bind(
+                this.httpErrorExceptionFilter,
+            ),
+        );
+        this.expressApplication.use(
+            this.baseExceptionFilter.catch.bind(this.baseExceptionFilter),
+        );
+        this.logger.info('exception filters completed');
     }
 
     public async init() {
         this.logger.info('Application initialization...');
         await this._initDb();
-        await this._initRouts();
         await this._initMiddleware();
-        await this._initExceptionFilter;
+        await this._initRouts();
+        await this._initExceptionFilter();
         await this._initServer();
     }
 }

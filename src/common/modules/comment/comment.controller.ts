@@ -16,6 +16,8 @@ import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.m
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../middleware/document-exist.middleware.js';
 import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
+import { ConfigInterface } from '../../config/config.interface';
+import { ConfigSchema } from '../../config/config.schema';
 
 type ParamsCommentOffer = {
     offerId: string;
@@ -31,14 +33,16 @@ const DEFAULT_COMMENT_COUNT_LIMIT = 50;
 export class CommentController extends Controller {
     constructor(
         @inject(AppComponent.LoggerInterface) protected logger: LoggerInterface,
+        @inject(AppComponent.ConfigInterface)
+        configService: ConfigInterface<ConfigSchema>,
         @inject(AppComponent.CommentServiceInterface)
         private readonly commentService: CommentServiceInterface,
         @inject(AppComponent.OfferServiceInterface)
         private readonly offerService: OfferServiceInterface,
     ) {
-        super(logger);
+        super(logger, configService);
 
-        this.logger.info('Register routes for CategoryController…');
+        this.logger.info('Register routes for CommentController…');
 
         this.addRoute({
             path: '/:offerId/:commentCount',

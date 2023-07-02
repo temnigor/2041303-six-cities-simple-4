@@ -1,7 +1,9 @@
 import { Container } from 'inversify';
 import ConfigService from '../common/config/config-service.js';
-import { ExceptionFilterInterface } from '../common/controller/exceptions-filter/exception-filter.interface.js';
-import ExceptionFilter from '../common/controller/exceptions-filter/exception-filter.js';
+import BaseExceptionFilter from '../common/exceptions-filter/base-exception-filter.js';
+import { ExceptionFilterInterface } from '../common/exceptions-filter/exception-filter.interface.js';
+import HttpErrorExceptionFilter from '../common/exceptions-filter/http-error-exception-filter.js';
+import ValidationExceptionFilter from '../common/exceptions-filter/validate-exception-filter.js';
 import { DatabaseClientInterface } from '../common/database-client/database-client.interface.js';
 import { MongoService } from '../common/database-client/mongo-service.js';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
@@ -28,8 +30,16 @@ export function createRestApplicationContainer() {
         .to(MongoService)
         .inSingletonScope();
     container
-        .bind<ExceptionFilterInterface>(AppComponent.ExceptionFilter)
-        .to(ExceptionFilter)
+        .bind<ExceptionFilterInterface>(AppComponent.HttpErrorExceptionFilter)
+        .to(HttpErrorExceptionFilter)
+        .inSingletonScope();
+    container
+        .bind<ExceptionFilterInterface>(AppComponent.ValidationExceptionFilter)
+        .to(ValidationExceptionFilter)
+        .inSingletonScope();
+    container
+        .bind<ExceptionFilterInterface>(AppComponent.BaseExceptionFilter)
+        .to(BaseExceptionFilter)
         .inSingletonScope();
 
     return container;

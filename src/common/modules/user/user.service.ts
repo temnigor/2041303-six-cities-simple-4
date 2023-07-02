@@ -20,9 +20,9 @@ export class UserService implements UserServiceInterface {
         return Boolean(await this.userModel.findOne({ email: email }));
     }
 
-    public async create(data: CreateUserDTO, salt: string) {
-        const user = new UserEntity(data);
-        user.setPassword(data.password, salt);
+    public async create(userData: CreateUserDTO, salt: string) {
+        const user = new UserEntity(userData);
+        user.setPassword(userData.password, salt);
 
         const freshUser = await this.userModel.create(user);
 
@@ -38,7 +38,7 @@ export class UserService implements UserServiceInterface {
     }
 
     findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
-        return this.userModel.findOne({ email });
+        return this.userModel.findOne({ email }).exec();
     }
 
     public async findAndUpdate(

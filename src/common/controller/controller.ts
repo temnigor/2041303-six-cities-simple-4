@@ -6,12 +6,20 @@ import { LoggerInterface } from '../logger/logger.interface.js';
 import { ControllerInterface } from './controller.interface.js';
 import { RouteInterface } from './route.interface.js';
 import { injectable } from 'inversify';
+import { ConfigInterface } from '../config/config.interface.js';
+import { ConfigSchema } from '../config/config.schema.js';
+import { getFullServerPath } from '../../helpers/server-path.js';
+import { STATIC_RESOURCE_FIELDS } from '../../app/rest.constant.js';
+import { transformObject } from '../../helpers/transform-from -static-path.js';
 
 @injectable()
 export abstract class Controller implements ControllerInterface {
     private readonly _router: Router;
 
-    constructor(protected readonly logger: LoggerInterface) {
+    constructor(
+        protected readonly logger: LoggerInterface,
+        protected readonly configService: ConfigInterface<ConfigSchema>,
+    ) {
         this._router = Router();
     }
 
@@ -35,7 +43,23 @@ export abstract class Controller implements ControllerInterface {
         );
     }
 
+    protected addStaticPath(data: Record<string, unknown>): void {
+        const fullServerPath = getFullServerPath(
+            this.configService.get('HOST') as string,
+            this.configService.get('PORT') as number,
+        );
+        transformObject(
+            STATIC_RESOURCE_FIELDS,
+            `${fullServerPath}/${this.configService.get(
+                'STATIC_DIRECTORY_PATH',
+            )}`,
+            `${fullServerPath}/${this.configService.get('UPLOAD_DIRECTORY')}`,
+            data,
+        );
+    }
+
     public send<T>(res: Response, statusCode: number, data: T): void {
+        this.addStaticPath(data as Record<string, unknown>);
         res.type('application/json').status(statusCode).json(data);
     }
 

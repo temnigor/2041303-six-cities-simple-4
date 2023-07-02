@@ -26,7 +26,7 @@ export class OfferService implements OfferServiceInterface {
     public async findById(
         id: string,
     ): Promise<DocumentType<OfferEntity> | null> {
-        return this.offerModel.findById(id).populate('userId').exec();
+        return this.offerModel.findById(id).populate(['userId']).exec();
     }
 
     public async deleteById(
@@ -62,55 +62,9 @@ export class OfferService implements OfferServiceInterface {
 
     public async find(limit: number): Promise<DocumentType<OfferEntity>[]> {
         return this.offerModel
-            .aggregate([
-                {
-                    $lookup: {
-                        from: 'comment',
-                        let: { offerId: '$_id' },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $in: ['$$offerId', '$comment'],
-                                    },
-                                },
-                            },
-                            { $project: { _id: 1 } },
-                        ],
-                        as: 'comment',
-                    },
-                },
-                {
-                    $addFields: {
-                        id: { $toString: '$_id' },
-                        commentCount: { $size: '$comment' },
-                    },
-                },
-                { $unset: 'comment' },
-                { $limit: limit },
-                { $sort: { offerCount: SortType.Down } },
-            ])
-
-            .exec();
-    }
-
-    public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {
-        return this.offerModel
             .find()
             .sort({ createdAt: SortType.Down })
-            .limit(count)
             .populate(['userId'])
-            .exec();
-    }
-
-    public async findDiscussed(
-        count: number,
-    ): Promise<DocumentType<OfferEntity>[]> {
-        return this.offerModel
-            .find()
-            .sort({ commentCount: SortType.Down })
-            .limit(count)
-            .populate(['userId'])
-            .exec();
+            .limit(limit);
     }
 }

@@ -3,11 +3,9 @@ import {
     ArrayMinSize,
     IsArray,
     IsBoolean,
-    IsDateString,
     IsEnum,
     IsObject,
     IsOptional,
-    Matches,
     Max,
     MaxLength,
     Min,
@@ -30,18 +28,11 @@ export class UpdateOfferDto {
     public description?: string;
 
     @IsOptional()
-    @IsDateString({}, { message: 'postDate must be valid ISO date' })
-    public date?: Date;
-
-    @IsOptional()
     @IsEnum(Town, { message: 'One of 6 town' })
     public town?: Town;
 
     @IsOptional()
     @MaxLength(256, { message: 'Too short for field «image»' })
-    @Matches(/.jpg |.png/, {
-        message: 'image must have format .jpg or .png',
-    })
     public previewImage?: string;
 
     @IsOptional()
@@ -49,10 +40,6 @@ export class UpdateOfferDto {
     @ArrayMaxSize(6, { message: 'Max array length 6' })
     @ArrayMinSize(6, { message: 'Min array length 6' })
     @MaxLength(256, { each: true, message: 'Too short for field «image»' })
-    @Matches(/.jpg|.png/, {
-        each: true,
-        message: 'image must have format .jpg or .png',
-    })
     public houseImage?: string[];
 
     @IsOptional()

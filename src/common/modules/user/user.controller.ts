@@ -17,16 +17,12 @@ import { fillDTO } from '../../../helpers/fill-dto.js';
 import { ValidateDtoMiddleware } from '../../middleware/validate-dto.middleware.js';
 import { UploadFileMiddleware } from '../../middleware/upload-file.middleware.js';
 import { ValidateObjectIdMiddleware } from '../../middleware/validate-objectid.middleware.js';
-import * as core from 'express-serve-static-core';
 import LoginUserRDO from './rdo/logen-user.rdo.js';
 import { createJWT } from '../../../helpers/jwt.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
 import TokenAndUserRDO from './rdo/token-and -user.rdo.js';
-
-type ParamUser = {
-    userId: string;
-};
+import UploadUserAvatarRDO from './rdo/upload-user-avatar.rdo.js';
 
 @injectable()
 export class UserController extends Controller {
@@ -36,9 +32,9 @@ export class UserController extends Controller {
         @inject(AppComponent.UserServiceInterface)
         private readonly userService: UserServiceInterface,
         @inject(AppComponent.ConfigInterface)
-        private readonly configService: ConfigInterface<ConfigSchema>,
+        configService: ConfigInterface<ConfigSchema>,
     ) {
-        super(logger);
+        super(logger, configService);
         this.addRoute({
             path: '/register',
             method: HttpMethod.Post,
@@ -46,7 +42,7 @@ export class UserController extends Controller {
             middlewares: [new ValidateDtoMiddleware(CreateUserDTO)],
         });
         this.addRoute({
-            path: '/update/:userId',
+            path: '/update',
             method: HttpMethod.Post,
             handler: this.update,
             middlewares: [
@@ -62,7 +58,7 @@ export class UserController extends Controller {
             middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
         });
         this.addRoute({
-            path: '/:userId/avatar',
+            path: '/avatar',
             method: HttpMethod.Post,
             handler: this.uploadAvatar,
             middlewares: [
@@ -91,7 +87,9 @@ export class UserController extends Controller {
         >,
         res: Response,
     ): Promise<void> {
+        console.log(body.email);
         const user = await this.userService.findByEmail(body.email);
+
         if (user) {
             throw new HttpError(
                 StatusCodes.CONFLICT,
@@ -103,21 +101,22 @@ export class UserController extends Controller {
             body,
             this.configService.get('SALT') as string,
         );
+        console.log(body);
         this.created(res, fillDTO(UserRDO, createUser));
     }
 
     public async update(
         {
-            params,
             body,
+            user: { email },
         }: Request<
-            core.ParamsDictionary | ParamUser,
+            Record<string, unknown>,
             Record<string, unknown>,
             UpdateUserDTO
         >,
         res: Response,
     ) {
-        const user = await this.userService.findById(params.userId);
+        const user = await this.userService.findByEmail(email);
         if (!user) {
             throw new HttpError(
                 StatusCodes.CONFLICT,
@@ -125,14 +124,15 @@ export class UserController extends Controller {
                 'UserController',
             );
         }
-        const update = this.userService.findAndUpdate(params.userId, body);
+        const update = await this.userService.findAndUpdate(user.id, body);
         this.ok(res, fillDTO(UserRDO, update));
     }
 
     public async uploadAvatar(req: Request, res: Response) {
-        this.created(res, {
-            filepath: req.file?.path,
-        });
+        const { userId } = req.params;
+        const uploadFile = { avatarPath: req.file?.filename };
+        await this.userService.findAndUpdate(userId, uploadFile);
+        this.created(res, fillDTO(UploadUserAvatarRDO, uploadFile));
     }
 
     public async login(
@@ -164,20 +164,16 @@ export class UserController extends Controller {
         );
     }
 
-    public async checkAuthenticate(
-        { user: { email } }: Request,
-        res: Response,
-    ) {
-        const foundedUser = await this.userService.findByEmail(email);
-
-        if (!foundedUser) {
+    public async checkAuthenticate(req: Request, res: Response) {
+        if (!req.user) {
             throw new HttpError(
                 StatusCodes.UNAUTHORIZED,
                 'Unauthorized',
                 'UserController',
             );
         }
-
+        const { email } = req.user;
+        const foundedUser = await this.userService.findByEmail(email);
         this.ok(res, fillDTO(TokenAndUserRDO, foundedUser));
     }
 }
