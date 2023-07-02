@@ -12,3 +12,5 @@ export const OFFER_PRISE_SIZE_MAX = 100000;
 export const OFFER_PRISE_SIZE_MIN = 100;
 export const RATING_MAX_COUNT = 5;
 export const RATING_MIN_COUNT = 1;
+export const DEFAULT_RATING = 0;
+export const DEFAULT_COMMENT_COUNT = 0;

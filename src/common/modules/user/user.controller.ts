@@ -7,6 +7,7 @@ import { UserServiceInterface } from './user.service.interface';
 import CreateUserDTO from './dto/create-user.dto.js';
 import UpdateUserDTO from './dto/update-user.dto.js';
 import UserRDO from './rdo/user.rdo.js';
+import * as core from 'express-serve-static-core';
 import HttpError from '../../error/http.error.js';
 import { StatusCodes } from 'http-status-codes';
 import { LoginUserDto } from './dto/login-user.dto.js';
@@ -23,6 +24,11 @@ import { JWT_ALGORITHM } from './user.constant.js';
 import { PrivateRouteMiddleware } from '../../middleware/private-route.middleware.js';
 import TokenAndUserRDO from './rdo/token-and -user.rdo.js';
 import UploadUserAvatarRDO from './rdo/upload-user-avatar.rdo.js';
+import { CheckUserRightOfUser } from '../../middleware/check-user-right-of-user.js';
+
+type ParamsUser = {
+    userId: string;
+};
 
 @injectable()
 export class UserController extends Controller {
@@ -42,11 +48,12 @@ export class UserController extends Controller {
             middlewares: [new ValidateDtoMiddleware(CreateUserDTO)],
         });
         this.addRoute({
-            path: '/update',
+            path: '/update/userId',
             method: HttpMethod.Post,
             handler: this.update,
             middlewares: [
                 new PrivateRouteMiddleware(),
+                new CheckUserRightOfUser(),
                 new ValidateDtoMiddleware(UpdateUserDTO),
             ],
         });
@@ -58,11 +65,12 @@ export class UserController extends Controller {
             middlewares: [new ValidateDtoMiddleware(LoginUserDto)],
         });
         this.addRoute({
-            path: '/avatar',
+            path: '/avatar/:userId',
             method: HttpMethod.Post,
             handler: this.uploadAvatar,
             middlewares: [
                 new ValidateObjectIdMiddleware('userId'),
+                new CheckUserRightOfUser(),
                 new UploadFileMiddleware(
                     this.configService.get('UPLOAD_DIRECTORY') as string,
                     'avatar',
@@ -107,16 +115,17 @@ export class UserController extends Controller {
 
     public async update(
         {
+            params,
             body,
-            user: { email },
         }: Request<
-            Record<string, unknown>,
+            core.ParamsDictionary | ParamsUser,
             Record<string, unknown>,
             UpdateUserDTO
         >,
         res: Response,
     ) {
-        const user = await this.userService.findByEmail(email);
+        const { userId } = params;
+        const user = await this.userService.findById(userId);
         if (!user) {
             throw new HttpError(
                 StatusCodes.CONFLICT,
@@ -124,7 +133,7 @@ export class UserController extends Controller {
                 'UserController',
             );
         }
-        const update = await this.userService.findAndUpdate(user.id, body);
+        const update = await this.userService.findAndUpdate(userId, body);
         this.ok(res, fillDTO(UserRDO, update));
     }
 
@@ -158,10 +167,7 @@ export class UserController extends Controller {
             id: user.id,
             email: user.email,
         });
-        return this.ok(
-            res,
-            fillDTO(LoginUserRDO, { email: user.email, token }),
-        );
+        return this.ok(res, fillDTO(LoginUserRDO, { ...user, token: token }));
     }
 
     public async checkAuthenticate(req: Request, res: Response) {

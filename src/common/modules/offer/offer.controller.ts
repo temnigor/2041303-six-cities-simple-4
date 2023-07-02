@@ -24,6 +24,7 @@ import { UploadManyFileMiddleware } from '../../middleware/upload-many-file.midd
 import UploadHouseImageRDO from './rdo/upload-house-image.rdo.js';
 import UploadPreviewImageRDO from './rdo/upload-preview-image.rdo.js';
 import { CommentServiceInterface } from '../comment/comment.service.interface';
+import { CheckUserRightOfOffer } from '../../middleware/check-user-right-of-offer.js';
 
 const DEFAULT_OFFERS_COUNT_LIMIT = 60;
 type ParamsOfferId = {
@@ -60,6 +61,7 @@ export class OfferController extends Controller {
             handler: this.update,
             middlewares: [
                 new PrivateRouteMiddleware(),
+                new CheckUserRightOfOffer(this.offerService),
                 new ValidateObjectIdMiddleware('offerId'),
                 new DocumentExistsMiddleware(
                     this.offerService,
@@ -81,6 +83,7 @@ export class OfferController extends Controller {
                     'offerId',
                 ),
                 new PrivateRouteMiddleware(),
+                new CheckUserRightOfOffer(this.offerService),
             ],
         });
         this.addRoute({

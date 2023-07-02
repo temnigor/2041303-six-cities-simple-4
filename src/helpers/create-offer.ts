@@ -1,6 +1,6 @@
-import { HouseType } from '../../enum/house-type.enum.js';
-import { Coordinates } from '../../types/coordinates.type.js';
-import { Offer } from '../../types/offer.type';
+import { HouseType } from '../enum/house-type.enum';
+import { Coordinates } from '../types/coordinates.type';
+import { Offer } from '../types/offer.type';
 
 function getCoordinate(data: string): Coordinates {
     const coordinate: { [coordinateName: string]: number } = {};

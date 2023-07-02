@@ -6,7 +6,6 @@ import typegoose, {
 import { createSHA256 } from '../../../helpers/sha.js';
 
 const { prop, modelOptions } = typegoose;
-const DEFAULT_AVATAR = 'avatar-max.jpg';
 
 export interface UserEntity extends defaultClasses.Base {}
 
@@ -21,7 +20,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     })
     public email!: string;
 
-    @prop({ required: false, type: String, default: DEFAULT_AVATAR })
+    @prop({ required: false, type: String })
     public avatarPath?: string;
 
     @prop({

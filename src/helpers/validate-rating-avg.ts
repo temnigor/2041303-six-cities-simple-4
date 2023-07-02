@@ -1,15 +1,21 @@
+import {
+    DEFAULT_RATING,
+    RATING_MAX_COUNT,
+    RATING_MIN_COUNT,
+} from '../common/modules/offer/validate-offer-constant.js';
+
 export function validateRatingAvg(rating: number | undefined): number {
     const ratingAvg = Number(rating);
-    if (ratingAvg >= 1 && ratingAvg <= 5) {
+    if (ratingAvg >= RATING_MIN_COUNT && ratingAvg <= RATING_MAX_COUNT) {
         return Number(ratingAvg.toFixed(1));
     }
-    if (ratingAvg < 1) {
-        return 1;
+    if (ratingAvg < RATING_MIN_COUNT) {
+        return RATING_MIN_COUNT;
     }
 
-    if (ratingAvg > 5) {
-        return 5;
+    if (ratingAvg > RATING_MAX_COUNT) {
+        return RATING_MAX_COUNT;
     }
 
-    return 0;
+    return DEFAULT_RATING;
 }
