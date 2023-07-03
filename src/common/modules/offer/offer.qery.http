@@ -2,13 +2,13 @@
 GET http://localhost:4000/offers/10 HTTP/1.1
 ###
 # show
-GET http://localhost:4000/6496426486fbd81395dc25d1 HTTP/1.1
+GET http://localhost:4000/64a23eb427c6a4e8e1550203 HTTP/1.1
 ###
 
 # create
 POST http://localhost:4000/create HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0OTY0MjYzODZmYmQ4MTM5NWRjMjVjOSIsImVtYWlsIjoiMXBvc0BnbWFpbC5jb20iLCJpYXQiOjE2ODgxODcwMTYsImV4cCI6MTY4ODM1OTgxNn0.x-jrLRKpBeJqDRVB80_cUUMxKgto95E7KLq8Yg_OnKU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzUyOTI3LCJleHAiOjE2ODg1MjU3Mjd9.30aBkIT3Mkw-fPvMnEcMrl0YHHfOGih_ZQDk85NiU1I
 
 {
   "offerName": "Сдам Дом у Озера",
@@ -39,9 +39,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0OTY0MjYzODZmYmQ4MTM5NWRjM
 ###
 
 #Update
-PATCH http://localhost:4000/update/649fbe20065a946744e4061a HTTP/1.1
+PATCH http://localhost:4000/update/64a264ee3196e7a1a31d1120 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0OTY0MjYzODZmYmQ4MTM5NWRjMjVjOSIsImVtYWlsIjoiMXBvc0BnbWFpbC5jb20iLCJpYXQiOjE2ODgxODcwMTYsImV4cCI6MTY4ODM1OTgxNn0.x-jrLRKpBeJqDRVB80_cUUMxKgto95E7KLq8Yg_OnKU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzUyOTI3LCJleHAiOjE2ODg1MjU3Mjd9.30aBkIT3Mkw-fPvMnEcMrl0YHHfOGih_ZQDk85NiU1I
 
 {
   "offerName": "Сдам Дом уe Озера",
@@ -73,7 +73,76 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0OTY0MjYzODZmYmQ4MTM5NWRjM
 ###
 
 #Delete
-DELETE  http://localhost:4000/delete/649fbe20065a946744e4061a HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0OTY0MjYzODZmYmQ4MTM5NWRjMjVjOSIsImVtYWlsIjoiMXBvc0BnbWFpbC5jb20iLCJpYXQiOjE2ODgxODcwMTYsImV4cCI6MTY4ODM1OTgxNn0.x-jrLRKpBeJqDRVB80_cUUMxKgto95E7KLq8Yg_OnKU
+DELETE  http://localhost:4000/delete/64a264ee3196e7a1a31d1120 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzUyOTI3LCJleHAiOjE2ODg1MjU3Mjd9.30aBkIT3Mkw-fPvMnEcMrl0YHHfOGih_ZQDk85NiU1I
+###
 
+## Отправка одной фотографии предложениея по аренде
 
+POST http://localhost:4000/offers/64a23eb427c6a4e8e1550203/image HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzY2NDkwLCJleHAiOjE2ODg1MzkyOTB9.5_LNrIjO97mAtwqr_8SDKosTiyDwG3U-du9bPa3-vsI
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="previewImage"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+## Отправка колекции фотографий предложениея по аренде
+
+POST http://localhost:5000/offers/6492d52517d2e5a5496dfe22/pictures HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6IlZpdGFseUBtYWlsLnJ1IiwiaWQiOiI2NDkyZDQzNTE3ZDJlNWE1NDk2ZGZlMTgiLCJpYXQiOjE2ODczNDQyMTgsImV4cCI6MTY4NzUxNzAxOH0.Rwjez_RNPUL9PMBXjUTFP_MomLlxIJorCjDJLIb7M9M
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="houseImages"; filename="amsterdam.png"
+Content-Type: image/png
+
+< ./../../../../markup/img/amsterdam.jpg
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###

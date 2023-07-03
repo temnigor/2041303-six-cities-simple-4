@@ -196,7 +196,6 @@ export class OfferController extends Controller {
         }
         const offers = await this.offerService.find(count);
         const offersResponse = fillDTO(ManyOfferRDO, offers);
-        console.log(offersResponse);
         this.ok<ManyOfferRDO>(res, offersResponse);
     }
 

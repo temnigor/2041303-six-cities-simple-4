@@ -33,7 +33,6 @@ export function createOffer(offerString: string): Offer {
         userType,
         coordinatesTown,
     ] = offerString.split('\t');
-
     return {
         offerName,
         description,

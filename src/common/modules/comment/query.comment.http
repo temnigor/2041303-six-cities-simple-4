@@ -1,0 +1,16 @@
+## index
+GET http://localhost:4000/comment/64a23eb427c6a4e8e1550203/10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzUxNzUxLCJleHAiOjE2ODg1MjQ1NTF9.YuCRSojW1GMbJFil7-fN5AfJ3HeBr3pvVdIAGdIM9Pc
+###
+
+## creat
+POST  http://localhost:4000/comment/64a23eb427c6a4e8e1550203
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY0YTEzZWQ4ZDA0YjYxNzlhMmNmZDI3MSIsImVtYWlsIjoiMXRvcnRAZ21haWwuY29tIiwiaWF0IjoxNjg4MzUxNzUxLCJleHAiOjE2ODg1MjQ1NTF9.YuCRSojW1GMbJFil7-fN5AfJ3HeBr3pvVdIAGdIM9Pc
+
+{
+  "description": "Nice offer dued",
+  "rating": 4,
+  "userId": "64a13ed8d04b6179a2cfd271"
+}
+###

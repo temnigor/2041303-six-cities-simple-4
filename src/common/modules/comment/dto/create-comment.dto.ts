@@ -9,6 +9,8 @@ import {
 } from '../validate-comment-constant.js';
 
 export class CreateCommentDTO {
+    public offerId!: string;
+
     @MaxLength(COMMENT_DESCRIPTION_MAX, { message: 'Max length comment 1024' })
     @MinLength(COMMENT_DESCRIPTION_MIN, { message: 'Min length comment 5' })
     public description!: string;

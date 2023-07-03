@@ -63,16 +63,11 @@ export class CommentController extends Controller {
             method: HttpMethod.Post,
             handler: this.create,
             middlewares: [
+                new PrivateRouteMiddleware(),
                 new ValidateObjectIdMiddleware('offerId'),
                 new DocumentExistsMiddleware(
                     this.commentService,
                     'Comment',
-                    'commentId',
-                ),
-                new PrivateRouteMiddleware(),
-                new DocumentExistsMiddleware(
-                    this.offerService,
-                    'OfferController',
                     'offerId',
                 ),
                 new ValidateDtoMiddleware(CreateCommentDTO),
@@ -125,18 +120,20 @@ export class CommentController extends Controller {
                 'CommentController',
             );
         }
+        const { offerId } = params;
+        const { id } = user;
         const create = await this.commentService.create({
             ...body,
-            userId: user.id,
+            userId: id,
+            offerId,
         });
-        const comment = await this.commentService.findById(create.id);
-        await this.offerService.incCommentCount(params.offerId);
+        await this.offerService.incCommentCount(offerId);
         const ratingAvg = validateRatingAvg(
-            await this.commentService.avgRating(params.offerId),
+            await this.commentService.avgRating(offerId),
         );
-        await this.offerService.updateRatingById(params.offerId, {
+        await this.offerService.updateRatingById(offerId, {
             rating: ratingAvg,
         });
-        this.created(res, fillDTO(CommentRDO, comment));
+        this.created(res, fillDTO(CommentRDO, create));
     }
 }

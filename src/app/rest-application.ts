@@ -1,4 +1,3 @@
-import cors from 'cors';
 import { inject, injectable } from 'inversify';
 import { AppComponent } from '../enum/app-component.enum.js';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
@@ -92,7 +91,6 @@ export default class RestApplication {
         this.expressApplication.use(
             authenticateMiddleware.execute.bind(authenticateMiddleware),
         );
-        this.expressApplication.use(cors());
 
         this.logger.info('Global middleware initialization completed');
     }

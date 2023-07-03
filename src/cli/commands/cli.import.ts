@@ -29,7 +29,6 @@ export default class CliImport implements CliCommandInterface {
     constructor() {
         this.onLine = this.onLine.bind(this);
         this.onComplete = this.onComplete.bind(this);
-
         this.logger = new ConsoleLoggerService();
         this.userService = new UserService(this.logger, userModel);
         this.offerService = new OfferService(this.logger, offerModel);

@@ -30,7 +30,4 @@ export class ManyOfferRDO {
 
     @Expose()
     commentCount!: number;
-
-    @Expose()
-    ratingCount!: string[];
 }
